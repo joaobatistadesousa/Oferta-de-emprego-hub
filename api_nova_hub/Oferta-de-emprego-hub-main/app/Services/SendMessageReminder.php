@@ -81,8 +81,8 @@ class SendMessageReminder
                         $this->stateId
                     );
 
-                    $moveAndChangeStateService->changeOfBot($contact_identity);
-                    $moveAndChangeStateService->changeBlock($contact_identity);
+                    //$moveAndChangeStateService->changeOfBot($contact_identity);
+                    //$moveAndChangeStateService->changeBlock($contact_identity);
                     $formataData=$event['data'];
                     $event['data']=Carbon::parse($formataData)->format('d/m/Y');
                     
