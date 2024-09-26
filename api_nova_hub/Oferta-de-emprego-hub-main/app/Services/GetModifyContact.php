@@ -56,7 +56,7 @@ class GetModifyContact
         return json_decode($response, true);
     }
 
-    public function montaResource($event_id)
+    public function montaResource($event_id,$id_work)
     {
         // Obtém os dados do contato
         $data = $this->getContactData($this->contact_identity);
@@ -79,6 +79,9 @@ class GetModifyContact
                 $resource['extras'] = [];
             }
             $resource['extras']['event_id'] = $event_id;
+            $resource['extras']['id_worker'] = $id_work; // Adiciona o id_work
+
+            
 
             // Cria o novo recurso com o campo extras atualizado
             $new_resource = [
@@ -97,6 +100,7 @@ class GetModifyContact
                     'identity' => $this->contact_identity,
                     'extras' => [
                         'event_id' => $event_id,
+                        'id_worker' => $id_work,
                         'source' => '{{$user_channel_name}}' // Adiciona o campo "source"
                     ]
                 ]

@@ -94,8 +94,7 @@ class SendMessageBid
                     $this->autoAuthorization,
                     $this->contractid
                 );
-
-                $resource = $updateContactService->montaResource($eventId);
+                $resource = $updateContactService->montaResource($eventId,$worker->id_work);
                 $updateContactService->updateContact($resource);
 
                 $bidRequestService = new BidRequestService(
