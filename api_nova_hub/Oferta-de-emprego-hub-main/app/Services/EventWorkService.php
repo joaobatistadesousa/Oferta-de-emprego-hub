@@ -181,26 +181,44 @@ public function deleteWorkerEvent($eventId, array $workerIds)
             'events' => $events
         ]);
     }
+    // public function updateTriggerMessageLembrete($eventId, $contact_identity){
+
+
+    //     // Busca o trabalhador pelo contact_identity
+    //     $worker = DB::table('workers')
+    //         ->where('contact_identity', $contact_identity)
+    //         ->first();
+
+    //     if ($worker) {
+    //         // Atualiza o campo triggerMessageOferta na tabela workers_event
+    //         $updated = DB::table('workers_event')
+    //             ->where('idevento', $eventId)
+    //             ->where('worker_id', $worker->id)
+    //             ->update(['triggerMessageLembrete' => 1]);
+
+    //         return $updated > 0; // Retorna true se pelo menos um registro foi atualizado
+    //     }
+
+    //     return false; // Caso o trabalhador não seja encontrado
+    // }
     public function updateTriggerMessageLembrete($eventId, $contact_identity){
 
 
         // Busca o trabalhador pelo contact_identity
         $worker = DB::table('workers')
             ->where('contact_identity', $contact_identity)
-            ->first();
+            ->get();
 
-        if ($worker) {
+        foreach ($worker as $w) {
             // Atualiza o campo triggerMessageOferta na tabela workers_event
             $updated = DB::table('workers_event')
                 ->where('idevento', $eventId)
-                ->where('worker_id', $worker->id)
+                ->where('worker_id', $w->id)
                 ->update(['triggerMessageLembrete' => 1]);
-
-            return $updated > 0; // Retorna true se pelo menos um registro foi atualizado
         }
-
         return false; // Caso o trabalhador não seja encontrado
     }
+
 }
 
 
