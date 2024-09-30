@@ -13,6 +13,14 @@ class EventWorkController extends Controller
 {
  // app/Http/Controllers/EventController.php
 
+ function limparEndereco($endereco) {
+    // Usa preg_replace para substituir qualquer variação de [BR] por espaços em branco
+    $enderecoLimpo = preg_replace("/\[br\]/i", " ", $endereco);
+    
+    // Retorna o endereço sem as variações de [BR]
+    return $enderecoLimpo;
+}
+
 public function storeOrUpdate(Request $request)
 {
     // Validar dados
@@ -32,7 +40,7 @@ public function storeOrUpdate(Request $request)
 
     // Converter a data para o formato do banco de dados
     $validatedData['data'] = \Carbon\Carbon::createFromFormat('d/m/Y', $validatedData['data'])->format('Y-m-d');
-
+        $validatedData['endereco'] = $this->limparEndereco($validatedData['endereco']);
     // Inserir ou atualizar o evento
     $event = Event::updateOrCreate(
         ['idevento' => $validatedData['idevento']],
