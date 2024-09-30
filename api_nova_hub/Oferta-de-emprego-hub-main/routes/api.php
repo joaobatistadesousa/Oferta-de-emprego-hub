@@ -2,6 +2,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Services\SendMessageReminder;
 use App\Http\Middleware\CheckAuthentication;
+
 // routes/api.php
 use App\Http\Controllers\EventWorkController;
 Route::post('/event-work', [EventWorkController::class, 'storeOrUpdate'])->middleware(CheckAuthentication::class);
@@ -23,3 +24,4 @@ Route::get('/eventos-futuros', function () {
     return $SendMessageReminder->sendMessageReminder();
 
 });
+

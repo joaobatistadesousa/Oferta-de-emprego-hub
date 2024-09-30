@@ -97,21 +97,21 @@ class SendMessageBid
                 $resource = $updateContactService->montaResource($eventId,$worker->id_work);
                 $updateContactService->updateContact($resource);
 
-                $bidRequestService = new BidRequestService(
-                    $this->messageTemplateName,
-                    $worker->contact_identity,
-                    $this->autoAuthorization,
-                    $this->contractid
-                );
+                // $bidRequestService = new BidRequestService(
+                //     $this->messageTemplateName,
+                //     $worker->contact_identity,
+                //     $this->autoAuthorization,
+                //     $this->contractid
+                // );
 
-                $response = $bidRequestService->sendRequest(
-                    $event->evento,
-                    $event->data,
-                    $event->hora,
-                    $event->endereco,
-                    $event->contato,
-                    $event->valor
-                );
+                // $response = $bidRequestService->sendRequest(
+                //     $event->evento,
+                //     $event->data,
+                //     $event->hora,
+                //     $event->endereco,
+                //     $event->contato,
+                //     $event->valor
+                // );
 
 
   $event_work->updateTriggerMessageOfertaDisparo($event->idevento, $worker->contact_identity);

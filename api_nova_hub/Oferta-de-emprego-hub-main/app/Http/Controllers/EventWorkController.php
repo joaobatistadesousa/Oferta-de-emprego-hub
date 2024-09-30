@@ -129,8 +129,9 @@ public function updateIsAceptOferta(Request $request) {
     }
     
     // Chama o método de atualização no serviço
-    $EventWorkService->updateIsAceptOferta($idevento, $contactIdentity, $choiceOption);
-    
+    $test=$EventWorkService->updateIsAceptOferta($idevento, $contactIdentity, $choiceOption);
+   
+   
     // Retorna a resposta JSON após a operação
     return response()->json(['message' => 'Eventos e trabalhadores atualizados com sucesso']);
 }
