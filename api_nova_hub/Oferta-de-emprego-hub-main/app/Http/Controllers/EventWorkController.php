@@ -88,10 +88,10 @@ public function storeOrUpdate(Request $request)
     $sendMessageBidService = new SendMessageBid(
         "hubprolog",
         "Key cm90ZWFkb3JodWI6SWgzWUpIUkpkSWFpNklGMVR0cHE=",
-        "direcionadorhub",
+        "ofertadeemprego",
         "3ecc242e-6064-4b6f-8a5a-ae74c587ef19",
-        "21ae837c-9c06-4136-8bdc-01c50c7adedd",
-        'oferta_emprgo'
+        "74400ce9-0225-4359-b234-48948bb08c75",
+        'oferta_emprego3'
     );
 
     // Obtém o idevento do corpo da requisição
