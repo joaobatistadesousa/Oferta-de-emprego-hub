@@ -84,7 +84,7 @@ class SendMessageBid
                     $this->stateId
                 );
 
-                $moveAndChangeStateService->changeOfBot($contact_identity);
+                 $moveAndChangeStateService->changeOfBot($contact_identity);
                 $moveAndChangeStateService->changeBlock($contact_identity);
 
                 // Atualiza o contato usando o serviço de atualização

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class Move_and_change_state_of_bot_or_sub_bot_service
 {
@@ -21,10 +22,22 @@ class Move_and_change_state_of_bot_or_sub_bot_service
         $this->idBot = $idBot;
         $this->flow_identifier = $flow_identifier;
         $this->stateId = $stateId;
+        
     }
 
     public function changeOfBot($contact_identity)
     {
+        
+        //teste variaveis
+       Log::info("dados no changeOfBot: ",
+            ['contractid' => $this->contractid,'contact_identity' => $contact_identity,
+                'idSubBot' => $this->idSubBot,
+                'idBot' => $this->idBot,
+                'stateId' => $this->stateId,
+                'flow_identifier' => $this->flow_identifier,
+                'autoAuthorization' => $this->autoAuthorization,
+            ]);
+            
         $response = Http::withHeaders([
             'Authorization' => $this->autoAuthorization,
             'Content-Type' => 'application/json',
