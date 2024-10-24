@@ -23,5 +23,8 @@ Route::get('/eventos-futuros', function () {
     );;
     return $SendMessageReminder->sendMessageReminder();
 
+
+
 });
+Route::get('/receberamMensagemEaceitaram', [EventWorkController::class, 'getAllUsersRevcivedOfertaAndAccepted']);
 

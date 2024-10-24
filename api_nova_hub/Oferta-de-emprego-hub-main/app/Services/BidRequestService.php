@@ -8,7 +8,7 @@ use GuzzleHttp\Psr7\Request;
 class BidRequestService
 {
     private $messageTemplateName;
-    private $tosendNumber;
+    private $tosendNumber ;
     private $autorizationToken;
     private $contractid;
 

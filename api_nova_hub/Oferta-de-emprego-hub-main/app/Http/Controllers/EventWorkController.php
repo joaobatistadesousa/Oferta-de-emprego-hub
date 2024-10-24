@@ -6,8 +6,11 @@ use Illuminate\Http\Request;
 use App\Models\Event;
 use App\Models\Worker;
 use App\Models\WorkersEvent;
-use App\Services\SendMessageBid;
+// use App\Services\SendMessageBid;
+use App\Services\active\BidCampain;
 use App\Services\EventWorkService;
+use Illuminate\Support\Facades\Log;
+
 
 class EventWorkController extends Controller
 {
@@ -85,7 +88,16 @@ public function storeOrUpdate(Request $request)
         );
     }
 
-    $sendMessageBidService = new SendMessageBid(
+    // $sendMessageBidService = new SendMessageBid(
+    //     "hubprolog",
+    //     "Key cm90ZWFkb3JodWI6SWgzWUpIUkpkSWFpNklGMVR0cHE=",
+    //     "ofertadeemprego",
+    //     "3ecc242e-6064-4b6f-8a5a-ae74c587ef19",
+    //     "74400ce9-0225-4359-b234-48948bb08c75",
+    //     'oferta_emprego3'
+    // );
+
+    $activeCapain= new BidCampain(
         "hubprolog",
         "Key cm90ZWFkb3JodWI6SWgzWUpIUkpkSWFpNklGMVR0cHE=",
         "ofertadeemprego",
@@ -93,13 +105,15 @@ public function storeOrUpdate(Request $request)
         "74400ce9-0225-4359-b234-48948bb08c75",
         'oferta_emprego3'
     );
-
     // Obtém o idevento do corpo da requisição
 
 
     // Chame o método getWorkers e retorne os resultados
-    $result = $sendMessageBidService->sendMessageBid($request->input('idevento'));
+     $result = $activeCapain->sendMessageBid($request->input('idevento'));
 
+    // Retorna a resposta   
+
+Log::info("result" . $result);
     return response()->json([
         'message' => 'Eventos e trabalhadores criados/atualizados com sucesso',
     ]);
@@ -144,6 +158,11 @@ public function getAllWorkersAndEventsWenAcceptisTrue(Request $request)
     $EventWorkService= new EventWorkService();
     return $EventWorkService->getWorkwhatIsAccepted();
 
+}
+public function getAllUsersRevcivedOfertaAndAccepted(Request $request){
+
+    $EventWorkService= new EventWorkService();
+    return $EventWorkService->getEventsInThreeDays();
 }
 
 

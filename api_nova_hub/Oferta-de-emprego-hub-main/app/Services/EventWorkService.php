@@ -157,30 +157,33 @@ public function deleteWorkerEvent($eventId, array $workerIds)
 // }
 
 
-    public function getEventsInThreeDays() {
-        // Get the date exactly three days from now
-        $threeDaysLater = Carbon::now()->addDays(3)->toDateString();
+public function getEventsInThreeDays() {
+    // Get the date exactly three days from now
+    $threeDaysLater = Carbon::now()->addDays(3)->toDateString();
 
-        // Query to get events and workers who accepted the event for exactly three days from now
-        $events = Event::with(['workers' => function ($query) {
-                        $query->wherePivot('aceitou', true)->
-                        wherePivot("triggerMessageOferta", true)->wherePivot("triggerMessageLembrete",false);
-                        // Only workers who accepted
-                    }])
-                    ->whereDate('data', $threeDaysLater) // Filter by the event date
-                    ->get();
-                    
-        if ($events->isEmpty()) {
-            return response()->json([
-                'message' => 'Nenhum evento encontrado para daqui a 3 dias.',
-            ]);
-        }
-
-        // Return the events along with workers who accepted
+    // Query to get events and workers who accepted the event for exactly three days from now
+    $events = Event::with(['workers' => function ($query) {
+                    $query->wherePivot('aceitou', true)->
+                    wherePivot("triggerMessageOferta", true)->wherePivot("triggerMessageLembrete",false);
+                    // Only workers who accepted
+                }])
+                ->whereDate('data', $threeDaysLater) // Filter by the event date
+                ->get();
+                
+    if ($events->isEmpty()) {
         return response()->json([
-            'events' => $events
+            'message' => 'Nenhum evento encontrado para daqui a 3 dias.',
         ]);
     }
+
+    // Return the events along with workers who accepted
+    return response()->json([
+        'events' => $events
+    ]);
+}
+
+
+
     // public function updateTriggerMessageLembrete($eventId, $contact_identity){
 
 

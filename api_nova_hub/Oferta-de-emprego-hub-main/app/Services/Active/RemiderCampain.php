@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Active;
 
 use App\Services\EventWorkService;
-use App\Services\Move_and_change_state_of_bot_or_sub_bot_service;
-use App\Services\ReminderRequestService;
+use App\Services\CampainRequestRemider;
+
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
-class SendMessageReminder
+class RemiderCampain
 {
     private $messageTemplateName;
     private $contractid;
@@ -16,14 +15,12 @@ class SendMessageReminder
     private $stateId;
     private $flow_identifier;
 
-    public function __construct($contractid, $autoAuthorization, $idSubBot, $stateId, $flow_identifier, $messageTemplateName)
+    public function __construct($contractid, $autoAuthorization,  $messageTemplateName)
     {
         $this->messageTemplateName = $messageTemplateName;
         $this->contractid = $contractid;
         $this->autoAuthorization = $autoAuthorization;
-        $this->idSubBot = $idSubBot;
-        $this->stateId = $stateId;
-        $this->flow_identifier = $flow_identifier;
+
     }
 
     public function getWorkers()
@@ -57,12 +54,12 @@ class SendMessageReminder
         }
     }
     public function sendMessageReminder() {
+        $usersNumbers = []; // Initialize an array to collect user numbers
         try {
             $eventWorkService = new EventWorkService();
             $events = $this->getWorkers();
-            Log::info("events: " . json_encode($events));
-            
-            if (!$events || !isset($events['events'])) {
+    
+            if (!$events) {
                 return false;
             }
     
@@ -70,29 +67,35 @@ class SendMessageReminder
                 $eventId = $event['idevento'];
                 $workers = $event['workers'];
     
-                // Formata a data do evento para o formato desejado
-                $formattedDate = Carbon::parse($event['data'])->format('d/m/Y');
-    
                 foreach ($workers as $worker) {
                     $contact_identity = $worker['contact_identity'];
     
-                    // Cria um serviço para enviar a mensagem de lembrete
-                    $reminderRequestService = new ReminderRequestService(
-                        $this->messageTemplateName,
-                        $contact_identity,
-                        $this->autoAuthorization,
-                        $this->contractid
-                    );
+                    // Format the event date using Carbon
+                    $formataData = $event['data'];
+                    $event['data'] = Carbon::parse($formataData)->format('d/m/Y');
     
-                    // Envia a requisição de lembrete
-                    $reminderRequestService->sendRequest(
-                        $formattedDate,
-                        $event['endereco']
-                    );
+                    // Correct the phone number by removing the "+" symbol
+                    $userNumber = ltrim($worker['telefone'], '+');
     
-                    // Atualiza o trigger de mensagem lembrete para o trabalhador
+                    // Add the user number to the array, ensuring no duplicates
+                    array_push($usersNumbers, $userNumber);
+    
+                    // Update trigger message for the worker
                     $eventWorkService->updateTriggerMessageLembrete($eventId, $contact_identity);
                 }
+    
+                // Ensure unique user numbers before sending the request
+                $uniqueUserNumbers = array_unique($usersNumbers);
+    
+                // Create the reminder request service and send the request
+                $reminderRequestService = new CampainRequestRemider(
+                    $this->messageTemplateName
+                );
+                $reminderRequestService->sendRequest(
+                    $event['data'],
+                    $event['endereco'],
+                    $uniqueUserNumbers // Send the unique user numbers
+                );
             }
     
         } catch (\Throwable $th) {
