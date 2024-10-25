@@ -7,7 +7,7 @@ use App\Models\Event;
 use App\Models\Worker;
 use App\Models\WorkersEvent;
 // use App\Services\SendMessageBid;
-use App\Services\active\BidCampain;
+use App\Services\Active\BidCampain;
 use App\Services\EventWorkService;
 use Illuminate\Support\Facades\Log;
 
@@ -56,6 +56,7 @@ public function storeOrUpdate(Request $request)
             'endereco' => $validatedData['endereco']
         ]
     );
+    Log::info("dados vindos do sistema do moiseis: " . json_encode($validatedData));
 
     // Associar trabalhadores ao evento
     foreach ($validatedData['workers'] as $workerData) {

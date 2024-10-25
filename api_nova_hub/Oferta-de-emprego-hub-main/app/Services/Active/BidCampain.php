@@ -1,5 +1,5 @@
 <?php
-namespace  App\Services\active;
+namespace  App\Services\Active;
 
 use App\Services\EventServices;
 use App\Services\WorkerServices;
