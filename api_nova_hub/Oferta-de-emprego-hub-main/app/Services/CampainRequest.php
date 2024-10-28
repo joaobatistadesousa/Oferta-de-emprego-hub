@@ -72,7 +72,7 @@ Log::info("todas as variaveis");
         "type" => "application/vnd.iris.activecampaign.full-campaign+json",
         "resource" => [
             "campaign" => [
-                "name" => "Disparo da oferta empprego via campaign" . Uuid::uuid4()->toString(),
+                "name" => "Disparo da oferta empprego via campaign" .$evento,
                 "campaignType" => "Batch",
                 "flowId" => $this->flowIdentifier,
                 "stateId" => $this->stateId,

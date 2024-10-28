@@ -18,7 +18,8 @@ class EventWorkController extends Controller
 
  function limparEndereco($endereco) {
     // Usa preg_replace para substituir qualquer variação de [BR] por espaços em branco
-    $enderecoLimpo = preg_replace("/\[br\]/i", " ", $endereco);
+    $enderecoLimpo = preg_replace(["/\[br\]/i", "/\n/", "/\t/", "/\s{2,}/"], ["", "", "", " "], $endereco);
+$enderecoLimpo = trim($enderecoLimpo); // Remove espaços extras no início e no final
     
     // Retorna o endereço sem as variações de [BR]
     return $enderecoLimpo;
@@ -59,10 +60,35 @@ public function storeOrUpdate(Request $request)
     Log::info("dados vindos do sistema do moiseis: " . json_encode($validatedData));
 
     // Associar trabalhadores ao evento
+    // foreach ($validatedData['workers'] as $workerData) {
+    //     // Remover o sinal de mais (+) do telefone
+    //     $telefoneSemMais = str_replace('+', '', $workerData['telefone']);
+    //             // Adicionar '+55' se o telefone não começar com esse prefixo
+    //             if (substr($telefoneSemMais, 0, 2) !== '55') {
+    //                 $telefoneSemMais = '55' . $telefoneSemMais;
+    //             }
+        
+    //             // Adicionar o '+' de volta no início do telefone
+    //             $telefoneFormatado = '+' . $telefoneSemMais;
+
+    
     foreach ($validatedData['workers'] as $workerData) {
         // Remover o sinal de mais (+) do telefone
         $telefoneSemMais = str_replace('+', '', $workerData['telefone']);
-
+        
+        // Verificar se o telefone começa com '5555' e substituir por '55'
+        if (substr($telefoneSemMais, 0, 4) === '5555') {
+            $telefoneSemMais = '55' . substr($telefoneSemMais, 4);
+        }
+        
+        // Adicionar '+55' se o telefone não começar com esse prefixo
+        if (substr($telefoneSemMais, 0, 2) !== '55') {
+            $telefoneSemMais = '55' . $telefoneSemMais;
+        }
+    
+        // Adicionar o '+' de volta no início do telefone
+        $telefoneFormatado = '+' . $telefoneSemMais;
+    
         // Formatar o contact_identity
         $contactIdentity = $telefoneSemMais . "@wa.gw.msging.net";
 
@@ -71,7 +97,7 @@ public function storeOrUpdate(Request $request)
             [
                 'contact_identity' => $contactIdentity,
                 'nome' => $workerData['nome'],
-                'telefone' => $workerData['telefone'],
+                'telefone' => $telefoneFormatado,
             ]
         );
 
