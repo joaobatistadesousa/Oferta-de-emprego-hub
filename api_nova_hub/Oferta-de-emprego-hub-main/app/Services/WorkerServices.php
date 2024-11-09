@@ -2,8 +2,7 @@
 namespace App\Services;
 use Illuminate\Support\Facades\DB;
 class WorkerServices{
-function   listaTrabalhadoresQueNaoRecebemMensagens($eventId)
-
+    function listaTrabalhadoresQueNaoRecebemMensagens($eventId)
     {
         $workers = DB::table('workers as w')
             ->join('workers_event as we', 'w.id', '=', 'we.worker_id')
@@ -12,10 +11,11 @@ function   listaTrabalhadoresQueNaoRecebemMensagens($eventId)
                 $query->whereNull('we.triggerMessageOferta')
                       ->orWhere('we.triggerMessageOferta', 0);
             })
-            ->select('w.id', 'w.id_work', 'w.contact_identity', 'w.nome', 'w.telefone')
+            ->select('w.id', 'w.id_work', 'w.contact_identity', 'w.nome', 'w.telefone', 'we.valor') // Incluindo o campo valor
             ->get();
-
+    
         return $workers;
     }
+    
 
 }

@@ -34,17 +34,18 @@ public function storeOrUpdate(Request $request)
         'data' => 'required|date_format:d/m/Y',
         'hora' => 'required|date_format:H:i:s',
         'contato' => 'nullable|string|max:255',
-        'valor' => 'nullable|numeric',
         'endereco' => 'nullable|string',
         'workers' => 'required|array',
         'workers.*.id' => 'required|string',
         'workers.*.nome' => 'required|string|max:255',
         'workers.*.telefone' => 'required|string|max:20',
+        'workers.*.valor' => 'required|numeric', // Verificação de valor numérico
     ]);
 
     // Converter a data para o formato do banco de dados
     $validatedData['data'] = \Carbon\Carbon::createFromFormat('d/m/Y', $validatedData['data'])->format('Y-m-d');
-        $validatedData['endereco'] = $this->limparEndereco($validatedData['endereco']);
+    $validatedData['endereco'] = $this->limparEndereco($validatedData['endereco']);
+
     // Inserir ou atualizar o evento
     $event = Event::updateOrCreate(
         ['idevento' => $validatedData['idevento']],
@@ -53,26 +54,20 @@ public function storeOrUpdate(Request $request)
             'data' => $validatedData['data'],
             'hora' => $validatedData['hora'],
             'contato' => $validatedData['contato'],
-            'valor' => $validatedData['valor'],
             'endereco' => $validatedData['endereco']
         ]
     );
-    Log::info("dados vindos do sistema do moiseis: " . json_encode($validatedData));
-
-    // Associar trabalhadores ao evento
-    // foreach ($validatedData['workers'] as $workerData) {
-    //     // Remover o sinal de mais (+) do telefone
-    //     $telefoneSemMais = str_replace('+', '', $workerData['telefone']);
-    //             // Adicionar '+55' se o telefone não começar com esse prefixo
-    //             if (substr($telefoneSemMais, 0, 2) !== '55') {
-    //                 $telefoneSemMais = '55' . $telefoneSemMais;
-    //             }
-        
-    //             // Adicionar o '+' de volta no início do telefone
-    //             $telefoneFormatado = '+' . $telefoneSemMais;
-
     
+
+    // Processar cada trabalhador
     foreach ($validatedData['workers'] as $workerData) {
+
+        // Verificar se o valor está presente e é numérico
+        if (!isset($workerData['valor']) || !is_numeric($workerData['valor'])) {
+            Log::error('Valor inválido ou ausente para o trabalhador: ' . json_encode($workerData));
+            continue;  // Pular para o próximo trabalhador se o valor não estiver presente ou for inválido
+        }
+        
         // Remover o sinal de mais (+) do telefone
         $telefoneSemMais = str_replace('+', '', $workerData['telefone']);
         
@@ -91,7 +86,8 @@ public function storeOrUpdate(Request $request)
     
         // Formatar o contact_identity
         $contactIdentity = $telefoneSemMais . "@wa.gw.msging.net";
-
+    
+        // Inserir ou atualizar o trabalhador
         $worker = Worker::updateOrCreate(
             ['id_work' => $workerData['id']],
             [
@@ -100,22 +96,25 @@ public function storeOrUpdate(Request $request)
                 'telefone' => $telefoneFormatado,
             ]
         );
-
-        // Inserir ou atualizar a relação na tabela pivot
+    
+        // Inserir ou atualizar a relação na tabela pivot com o valor de cada trabalhador
+        
         WorkersEvent::updateOrCreate(
             [
                 'worker_id' => $worker->id,
                 'idevento' => $event->idevento
             ],
             [
+                'valor' => $workerData['valor'],  // O valor que está sendo passado
                 'aceitou' => false,
                 'triggerMessageOferta' => false,
                 'triggerMessageLembrete' => false,
             ]
         );
-    }
-
-    // $sendMessageBidService = new SendMessageBid(
+    } 
+    
+    
+    //   $activeCapain= new BidCampain(
     //     "hubprolog",
     //     "Key cm90ZWFkb3JodWI6SWgzWUpIUkpkSWFpNklGMVR0cHE=",
     //     "ofertadeemprego",
@@ -123,32 +122,25 @@ public function storeOrUpdate(Request $request)
     //     "74400ce9-0225-4359-b234-48948bb08c75",
     //     'oferta_emprego3'
     // );
-
-    $activeCapain= new BidCampain(
-        "hubprolog",
-        "Key cm90ZWFkb3JodWI6SWgzWUpIUkpkSWFpNklGMVR0cHE=",
-        "ofertadeemprego",
-        "3ecc242e-6064-4b6f-8a5a-ae74c587ef19",
-        "74400ce9-0225-4359-b234-48948bb08c75",
-        'oferta_emprego3'
-    );
-    // Obtém o idevento do corpo da requisição
+    // // Obtém o idevento do corpo da requisição
 
 
-    // Chame o método getWorkers e retorne os resultados
-     $result = $activeCapain->sendMessageBid($request->input('idevento'));
+    // // Chame o método getWorkers e retorne os resultados
+    //  $result = $activeCapain->sendMessageBid($request->input('idevento'));
 
     // Retorna a resposta   
 
-Log::info("result" . $result);
+
     return response()->json([
         'message' => 'Eventos e trabalhadores criados/atualizados com sucesso',
     ]);
 
-
-
-
 }
+
+
+
+
+
 
 public function updateIsAceptOferta(Request $request) {
     // Cria uma instância do serviço

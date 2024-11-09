@@ -18,6 +18,7 @@ class WorkersEvent extends Model
         'worker_id',
         'idevento',
         'aceitou',
+        'valor',
         'triggerMessageOferta',
         'triggerMessageLembrete',
     ];

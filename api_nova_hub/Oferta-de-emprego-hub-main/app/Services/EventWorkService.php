@@ -9,26 +9,21 @@ use App\Models\Event;
 
 class EventWorkService
 {
-    // public function updateTriggerMessageOfertaDisparo($eventId, $contact_identity)
-    // {
-    //     // Busca o trabalhador pelo contact_identity
-    //     $worker = DB::table('workers')
-    //         ->where('contact_identity', $contact_identity)
-    //         ->first();
+    public function getValorByWorkerAndEvent($workerId, $idevento)
+{
+    // Obter o valor da tabela workers_event baseado no worker_id e idevento
+    $workersEvent = WorkersEvent::where('worker_id', $workerId)
+                                ->where('idevento', $idevento)
+                                ->first();
 
-    //     if ($worker) {
-    //         // Atualiza o campo triggerMessageOferta na tabela workers_event
-    //         $updated = DB::table('workers_event')
-    //             ->where('idevento', $eventId)
-    //             ->where('worker_id', $worker->id)
-    //             ->update(['triggerMessageOferta' => 1]);
+    // Verifica se o valor foi encontrado e retorna
+    if ($workersEvent) {
+        return $workersEvent->valor;
+    }
 
-    //         return $updated > 0;
-    //     }
-
-    //     return false; // Caso o trabalhador não seja encontrado
-    // }
-
+    // Caso não tenha encontrado, retorna null ou um valor default
+    return null;
+}
     public function updateTriggerMessageOfertaDisparo($eventId, $contact_identity)
     {
         // Busca o trabalhador pelo contact_identity
