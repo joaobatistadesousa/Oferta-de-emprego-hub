@@ -114,19 +114,19 @@ public function storeOrUpdate(Request $request)
     } 
     
     
-    //   $activeCapain= new BidCampain(
-    //     "hubprolog",
-    //     "Key cm90ZWFkb3JodWI6SWgzWUpIUkpkSWFpNklGMVR0cHE=",
-    //     "ofertadeemprego",
-    //     "3ecc242e-6064-4b6f-8a5a-ae74c587ef19",
-    //     "74400ce9-0225-4359-b234-48948bb08c75",
-    //     'oferta_emprego3'
-    // );
-    // // Obtém o idevento do corpo da requisição
+      $activeCapain= new BidCampain(
+        "hubprolog",
+        "Key cm90ZWFkb3JodWI6SWgzWUpIUkpkSWFpNklGMVR0cHE=",
+        "ofertadeemprego",
+        "3ecc242e-6064-4b6f-8a5a-ae74c587ef19",
+        "74400ce9-0225-4359-b234-48948bb08c75",
+        'oferta_emprego3'
+    );
+    // Obtém o idevento do corpo da requisição
 
 
-    // // Chame o método getWorkers e retorne os resultados
-    //  $result = $activeCapain->sendMessageBid($request->input('idevento'));
+    // Chame o método getWorkers e retorne os resultados
+     $result = $activeCapain->sendMessageBid($request->input('idevento'));
 
     // Retorna a resposta   
 
