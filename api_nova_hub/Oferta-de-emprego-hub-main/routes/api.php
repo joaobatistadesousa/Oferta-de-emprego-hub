@@ -27,4 +27,3 @@ Route::get('/eventos-futuros', function () {
 
 });
 Route::get('/receberamMensagemEaceitaram', [EventWorkController::class, 'getAllUsersRevcivedOfertaAndAccepted']);
-

@@ -109,9 +109,13 @@ class CampainRequest
         $request = new Request('POST', "https://{$this->contractId}.http.msging.net/commands", $headers, $body);
         try {
             $res = $client->sendAsync($request)->wait();
+            $responseBody = json_decode($res->getBody());
             Log::info("Resposta da API: " . $res->getStatusCode() . ' - ' . $res->getBody());
+            return $responseBody;
+
         } catch (\Exception $e) {
             Log::error("Erro ao enviar requisição: " . $e->getMessage());
+            return $e->getMessage();
         }
     }
     
