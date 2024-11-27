@@ -89,9 +89,33 @@ class EnviaMessagem implements ShouldQueue
             $usersNumbers
         );
 
+        $this->clearLaravelCaches();
+
         // Log para verificar se a campanha foi enviada
         Log::info("Campanha enviada com sucesso para os trabalhadores.", [
             'response' => $response
         ]);
     }
+
+    protected function clearLaravelCaches()
+{
+    $commands = [
+        'php artisan config:clear',
+        'php artisan cache:clear',
+        'php artisan route:clear',
+        'php artisan view:clear',
+        'php artisan optimize:clear',
+        'composer dump-autoload',
+    ];
+
+    foreach ($commands as $command) {
+        exec($command, $output, $resultCode);
+        if ($resultCode !== 0) {
+        } else {
+        }
+    }
+}
+
+
+    
 }
